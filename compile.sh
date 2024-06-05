@@ -9,6 +9,10 @@ function compile {
   echo ""
 }
 
+cd benchmarks
+dart pub get
+cd ..
+
 for file in benchmarks/*.dart; do
   DART_FILE="$(basename "$file")"
   NAME="${DART_FILE%.dart}"

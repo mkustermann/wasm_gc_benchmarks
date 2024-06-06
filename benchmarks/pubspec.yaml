@@ -6,3 +6,4 @@ environment:
 
 dependencies:
   benchmark_harness: ^2.2.2
+  vector_math: ^2.1.4

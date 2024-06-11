@@ -60,4 +60,4 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-exec "$SHELL_BIN" "$RUN_JS" $SHELL_ARG_SEPERATOR "$JS_FILE" -- "$@"
+exec "$SHELL_BIN" "${SHELL_OPTIONS[@]}" "$RUN_JS" $SHELL_ARG_SEPERATOR "$JS_FILE" -- "$@"

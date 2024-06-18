@@ -10,7 +10,7 @@ function compile {
   echo ""
 }
 
-for dir in $(echo micro-benchmarks interop-benchmarks); do
+for dir in $(echo benchmarks micro-benchmarks interop-benchmarks); do
   cd $dir
   dart pub get
   cd ..

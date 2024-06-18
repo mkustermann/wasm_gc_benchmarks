@@ -17,14 +17,16 @@ function run {
   echo ""
 }
 
-for dir in $(echo micro-benchmarks interop-benchmarks); do
+for dir in $(echo benchmarks micro-benchmarks interop-benchmarks); do
   for file in $dir/*.dart; do
     ARGS_EQUALS="$(cat $file | grep "^// ARGS=" || true)"
     ARGS=()
+    if [[ "$file" == *"flute"* ]]; then
+      ARGS+=("$(date +%s.%N)")
+    fi
     if [ -n "$ARGS_EQUALS" ]; then
       ARGS+=("$PWD/${ARGS_EQUALS#// ARGS=}")
     fi
-    ARGS_=$ARGS_EQUALS
     if [[ $file != *"_helper.dart" ]]; then
       DART_FILE="$(basename "$file")"
       NAME="${DART_FILE%.dart}"

@@ -1,0 +1,3 @@
+[submodule "third_party/flute"]
+	path = third_party/flute
+	url = https://github.com/dart-lang/flute.git

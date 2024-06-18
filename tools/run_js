@@ -25,16 +25,33 @@ RUN_JS="$SDK_DIR/tools/run_js.js"
 
 # Hardcoded to x64 Linux for now.
 D8_BIN="$SDK_DIR/third_party/d8/linux/x64/d8"
+JSSHELL_BIN="$SDK_DIR/third_party/firefox_jsshell/js"
+JSC_BIN="$SDK_DIR/third_party/jsc/jsc"
 
 SHELL_BIN="$D8_BIN"
 SHELL_OPTIONS=()
-SHELL_ARG_SEPERATOR=""
+ARG_SEPERATOR="--"
 JS_FILE=""
 ARGS=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --d8)
       SHELL_BIN="$D8_BIN"
+      ARG_SEPERATOR="--"
+      shift
+      ;;
+
+    --jsshell)
+      SHELL_BIN="$JSSHELL_BIN"
+      ARG_SEPERATOR=""
+      shift
+      ;;
+
+    --jsc)
+      SHELL_BIN="$JSC_BIN"
+      export JSC_useWebAssemblyTypedFunctionReferences=1
+      export JSC_useWebAssemblyExtendedConstantExpression=1
+      export JSC_useWebAssemblyGC=1
       shift
       ;;
 
@@ -60,4 +77,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-exec "$SHELL_BIN" "${SHELL_OPTIONS[@]}" "$RUN_JS" $SHELL_ARG_SEPERATOR "$JS_FILE" -- "$@"
+TEMP_CONCAT_JS="/tmp/wasm_gc_bench_concat_preamble_and_dart2js_code.js"
+cat "$RUN_JS" "$JS_FILE" > "$TEMP_CONCAT_JS"
+
+exec "$SHELL_BIN" "${SHELL_OPTIONS[@]}" "$TEMP_CONCAT_JS" $ARG_SEPERATOR "$@"

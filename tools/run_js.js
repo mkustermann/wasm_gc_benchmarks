@@ -10,6 +10,40 @@
 var self = this;
 if (typeof global != "undefined") self = global;  // Node.js.
 
+// This script is intended to be used by D8, JSShell or JSC. We distinguish
+// them by the functions they offer to read files:
+//
+// Engine         | Shell    | FileRead             |  Arguments
+// --------------------------------------------------------------
+// V8             | D8       | readbuffer           |  arguments (arg0 arg1)
+// JavaScriptCore | JSC      | readFile             |  arguments (arg0 arg1)
+// SpiderMonkey   | JSShell  | readRelativeToScript |  scriptArgs (-- arg0 arg1)
+//
+const isD8 = (typeof readbuffer === "function");
+const isJSC = (typeof readFile === "function");
+const isJSShell = (typeof readRelativeToScript === "function");
+
+if (isD8) {
+  // D8's performance.measure is API incompatible with the browser version.
+  //
+  // (see also dart2js's `sdk/**/js_runtime/lib/preambles/d8.js`)
+  delete performance.measure;
+}
+
+function readFileContentsAsBytes(filename) {
+  var buffer;
+  if (isJSC) {
+    buffer = readFile(filename, "binary");
+  } else if (isD8) {
+    buffer = readbuffer(filename);
+  } else {
+    buffer = readRelativeToScript(filename, "binary");
+  }
+  return new Uint8Array(buffer, 0, buffer.byteLength);
+}
+
+var dartArgs =  (isD8 || isJSC) ? arguments : scriptArgs;
+
 (function(self, scriptArguments) {
   // Using strict mode to avoid accidentally defining global variables.
   "use strict"; // Should be first statement of this function.
@@ -30,11 +64,13 @@ if (typeof global != "undefined") self = global;  // Node.js.
   var head = 0;
   var tail = 0;
   var mask = taskQueue.length - 1;
+
   function addTask(elem) {
     taskQueue[head] = elem;
     head = (head + 1) & mask;
     if (head == tail) _growTaskQueue();
   }
+
   function removeTask() {
     if (head == tail) return;
     var result = taskQueue[tail];
@@ -42,6 +78,7 @@ if (typeof global != "undefined") self = global;  // Node.js.
     tail = (tail + 1) & mask;
     return result;
   }
+
   function _growTaskQueue() {
     // head == tail.
     var length = taskQueue.length;
@@ -126,12 +163,14 @@ if (typeof global != "undefined") self = global;  // Node.js.
   };
   var originalDate = Date;
   var originalNow = originalDate.now;
+
   function advanceTimeTo(time) {
     var now = originalNow();
     if (timeOffset < time - now) {
       timeOffset = time - now;
     }
   }
+
   function installMockDate() {
     var NewDate = function Date(Y, M, D, h, m, s, ms) {
       if (this instanceof Date) {
@@ -161,6 +200,7 @@ if (typeof global != "undefined") self = global;  // Node.js.
   // Each entry is list of [timeout, callback1 ... callbackn].
   var timerHeap = [];
   var timerIndex = {};
+
   function addDelayedTimer(f, ms) {
     var timeout = now() + ms;
     var timerList = timerIndex[timeout];
@@ -282,6 +322,7 @@ if (typeof global != "undefined") self = global;  // Node.js.
   self.setInterval = addInterval;
   self.clearInterval = cancelTimer;
   self.scheduleImmediate = addTask;
+  self.readFileContentsAsBytes = readFileContentsAsBytes;
   self.dartUseDateNowForTicks = true;
 
   // Some js-interop code accesses 'window' as 'self.window'
@@ -307,10 +348,20 @@ if (typeof global != "undefined") self = global;  // Node.js.
       //               Optional ')' at end           ^^^
 
       var lastMatch = null;
-      do {
-        var match = re.exec(stack);
-        if (match != null) lastMatch = match;
-      } while (match != null);
+      if (isD8) {
+        do {
+          var match = re.exec(stack);
+          if (match != null) lastMatch = match;
+        } while (match != null);
+      } else if (isJSShell || isJSC) {
+        var re = /^.*@(.*.js):.*$/mg
+        do {
+          var match = re.exec(stack);
+          if (match != null) lastMatch = match;
+        } while (match != null);
+      } else {
+        throw 'Running in unknown JS shell.';
+      }
       return lastMatch[1];
     }
   }
@@ -352,7 +403,4 @@ if (typeof global != "undefined") self = global;  // Node.js.
   // so pretend they don't exist.
   // TODO(30217): Try to use D8's worker.
   delete self.Worker;
-
-  // D8's performance.measure is API incompatible with the browser version.
-  delete performance.measure;
-})(self, arguments);
+})(self, dartArgs);

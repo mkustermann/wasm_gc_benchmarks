@@ -25,6 +25,8 @@ RUN_WASM="$SDK_DIR/tools/run_wasm.js"
 
 # Hardcoded to x64 Linux for now.
 D8_BIN="$SDK_DIR/third_party/d8/linux/x64/d8"
+JSSHELL_BIN="$SDK_DIR/third_party/firefox_jsshell/js"
+JSC_BIN="$SDK_DIR/third_party/jsc/jsc"
 
 SHELL_BIN="$D8_BIN"
 SHELL_OPTIONS=()
@@ -37,6 +39,21 @@ while [ $# -gt 0 ]; do
     --d8)
       SHELL_BIN="$D8_BIN"
       SHELL_ARG_SEPERATOR="--"
+      shift
+      ;;
+
+    --jsshell)
+      SHELL_BIN="$JSSHELL_BIN"
+      SHELL_ARG_SEPERATOR=""
+      shift
+      ;;
+
+    --jsc)
+      SHELL_BIN="$JSC_BIN"
+      SHELL_ARG_SEPERATOR="--"
+      export JSC_useWebAssemblyTypedFunctionReferences=1
+      export JSC_useWebAssemblyExtendedConstantExpression=1
+      export JSC_useWebAssemblyGC=1
       shift
       ;;
 

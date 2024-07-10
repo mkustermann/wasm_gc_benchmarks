@@ -44,6 +44,13 @@ void main(List<String> args) {
   ParseCpuSamplesFromDartBytes(
           confuseCompiler(Uint8List.fromList(jsBytes.toDart), Uint8List(10)))
       .report();
+
+  // Option e) Performance if we had the string in Dart and used Dart's json decoder.
+  // NOTE: We use string interpolation which will trick us to copy JS string over to
+  // Dart string.
+  ParseCpuSamplesFromDartString(
+          confuseCompiler('a${jsString.toDart}'.substring(1), ''))
+      .report();
 }
 
 abstract class Benchmark extends BenchmarkBase {
@@ -127,6 +134,71 @@ class ParseCpuSamplesFromBrowserString extends Benchmark {
 
   ParseCpuSamplesFromBrowserString(this.jsonString)
       : super('ParseCpuSamples.FromBrowserString');
+
+  @override
+  void run() {
+    final tree = json.decode(jsonString) as Map;
+    final result = tree['result'] as Map;
+
+    // Read functions
+    final functions = result['functions'] as List;
+    final functionCount = functions.length;
+    final dartFunctions = <DartFunction>[];
+    for (int i = 0; i < functionCount; ++i) {
+      final entry = functions[i] as Map;
+      final function = entry['function'] as Map;
+      final resolvedUri = entry['resolvedUrl'] as String;
+      final kind = function['_kind'] as String;
+      final name = function['name'] as String;
+      dartFunctions.add(DartFunction(kind, resolvedUri, name));
+    }
+
+    // Read codes
+    final codes = result['_codes'] as List;
+    final codeCount = codes.length;
+    final dartCodes = <DartCode>[];
+    for (int i = 0; i < codeCount; ++i) {
+      final code = (codes[i] as Map)['code'] as Map;
+      dartCodes.add(DartCode(code['name'] as String));
+    }
+
+    // Read CPU samples
+    final samples = result['samples'] as List;
+    final sampleCount = samples.length;
+    final dartStacks = <Stack>[];
+    for (int i = 0; i < sampleCount; ++i) {
+      final sample = samples[i] as Map;
+      final stack = sample['stack'] as List;
+      final stackCount = stack.length;
+      final dartFrames = <DartFunction>[];
+      for (int j = 0; j < stackCount; ++j) {
+        final function = dartFunctions[stack[j] as int];
+        dartFrames.add(function);
+      }
+
+      final cstack = sample['_codeStack'] as List;
+      final cstackCount = cstack.length;
+      final codeFrames = <DartCode>[];
+      for (int j = 0; j < cstackCount; ++j) {
+        final code = dartCodes[cstack[j] as int];
+        codeFrames.add(code);
+      }
+
+      final tid = sample['tid'] as int;
+      final timestamp = sample['timestamp'] as int;
+
+      dartStacks.add(Stack(tid, timestamp, dartFrames, codeFrames));
+    }
+
+    useDartStacks(dartStacks);
+  }
+}
+
+class ParseCpuSamplesFromDartString extends Benchmark {
+  final String jsonString;
+
+  ParseCpuSamplesFromDartString(this.jsonString)
+      : super('ParseCpuSamples.FromDartString');
 
   @override
   void run() {

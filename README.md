@@ -24,6 +24,14 @@ The benchmarks can be run via
 ```
 on a linux machine.
 
+When changing `third_party/wasm-opt` binary one can re-optimize the performance
+benchmarks with the new binaryen via
+```
+% ./reoptimize.sh
+...
+% ./run.sh
+```
+
 (For ease of use and reproducability, we have checked-in command-line versions
 of the JS/Wasm runtime (e.g. D8) in repository under `third_party/*`)
 

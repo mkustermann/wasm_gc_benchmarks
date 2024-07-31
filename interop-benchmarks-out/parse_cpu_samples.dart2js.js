@@ -640,29 +640,41 @@
     throwExpressionWithWrapper(ex, wrapper) {
       throw A.initializeExceptionWrapper(wrapper, ex);
     },
-    throwUnsupportedOperation(o, operation) {
-      var verb, object, adjective, article,
-        wrapper = Error();
-      if (type$.List_dynamic._is(o)) {
-        if (operation === "add" || operation === "addAll")
-          verb = "add to";
-        else
-          verb = null;
-        object = "list";
-      } else {
-        verb = "'" + operation + "' on";
-        object = "ByteData";
-      }
+    throwUnsupportedOperation(o, operation, verb) {
+      var wrapper;
+      if (operation == null)
+        operation = 0;
       if (verb == null)
-        verb = "modify";
-      if (((o.$flags | 0) & 2) !== 0) {
+        verb = 0;
+      wrapper = Error();
+      A.throwExpressionWithWrapper(A._diagnoseUnsupportedOperation(o, operation, verb), wrapper);
+    },
+    _diagnoseUnsupportedOperation(o, encodedOperation, encodedVerb) {
+      var operation, table, tableLength, index, verb, object, flags, article, adjective;
+      if (typeof encodedOperation == "string")
+        operation = encodedOperation;
+      else {
+        table = "[]=;add;removeWhere;retainWhere;removeRange;setRange;setInt8;setInt16;setInt32;setUint8;setUint16;setUint32;setFloat32;setFloat64".split(";");
+        tableLength = table.length;
+        index = encodedOperation;
+        if (index > tableLength) {
+          encodedVerb = index / tableLength | 0;
+          index %= tableLength;
+        }
+        operation = table[index];
+      }
+      verb = typeof encodedVerb == "string" ? encodedVerb : "modify;remove from;add to".split(";")[encodedVerb];
+      object = type$.List_dynamic._is(o) ? "list" : "ByteData";
+      flags = o.$flags | 0;
+      article = "a ";
+      if ((flags & 4) !== 0)
+        adjective = "constant ";
+      else if ((flags & 2) !== 0) {
         adjective = "unmodifiable ";
         article = "an ";
-      } else {
-        adjective = "fixed-length ";
-        article = "a ";
-      }
-      A.throwExpressionWithWrapper(new A.UnsupportedError("Cannot " + verb + " " + article + adjective + object), wrapper);
+      } else
+        adjective = (flags & 1) !== 0 ? "fixed-length " : "";
+      return new A.UnsupportedError("'" + operation + "': Cannot " + verb + " " + article + adjective + object);
     },
     throwConcurrentModificationError(collection) {
       throw A.wrapException(A.ConcurrentModificationError$(collection));
@@ -4806,7 +4818,7 @@
   };
   A.ParseCpuSamplesFromBrowserStringViaBrowserJson.prototype = {
     run$0() {
-      var t2, t3, t4, functionCount, t5, dartFunctions, i, t6, t7, t8, codeCount, dartCodes, sampleCount, dartStacks, stackCount, dartFrames, j, cstackCount, codeFrames,
+      var t2, t3, t4, t5, t6, dartFunctions, i, t7, t8, t9, dartCodes, dartStacks, dartFrames, j, t10, codeFrames,
         t1 = self.JSON.parse(this.jsonString);
       t1.toString;
       t2 = type$.JSObject;
@@ -4817,76 +4829,76 @@
       t3.toString;
       t4 = type$.JSArray_nullable_Object;
       t4._as(t3);
-      functionCount = A._asInt(t3[$.$get$_jsLengthString()]);
-      t5 = type$.JSArray_DartFunction;
-      dartFunctions = A._setArrayType([], t5);
-      for (i = 0; i < functionCount; ++i) {
-        t6 = t3[i];
-        t6.toString;
-        t2._as(t6);
-        t7 = t6[$.$get$kFunction()];
+      t5 = t3.length;
+      t6 = type$.JSArray_DartFunction;
+      dartFunctions = A._setArrayType([], t6);
+      for (i = 0; i < t5; ++i) {
+        t7 = t3[i];
         t7.toString;
         t2._as(t7);
-        t6 = t6[$.$get$kResolvedUrl()];
-        t6.toString;
-        A._asString(t6);
-        t8 = t7[$.$get$kKind()];
+        t8 = t7[$.$get$kFunction()];
         t8.toString;
-        A._asString(t8);
-        t7 = t7[$.$get$kName()];
+        t2._as(t8);
+        t7 = t7[$.$get$kResolvedUrl()];
         t7.toString;
-        dartFunctions.push(new A.DartFunction(t8, t6, A._asString(t7)));
+        A._asString(t7);
+        t9 = t8[$.$get$kKind()];
+        t9.toString;
+        A._asString(t9);
+        t8 = t8[$.$get$kName()];
+        t8.toString;
+        dartFunctions.push(new A.DartFunction(t9, t7, A._asString(t8)));
       }
       t3 = t1[$.$get$kCodes()];
       t3.toString;
       t4._as(t3);
-      codeCount = A._asInt(t3[$.$get$_jsLengthString()]);
-      t6 = type$.JSArray_DartCode;
-      dartCodes = A._setArrayType([], t6);
-      for (i = 0; i < codeCount; ++i) {
-        t7 = t3[i];
-        t7.toString;
-        t7 = t2._as(t7)[$.$get$kCode()];
-        t7.toString;
-        t7 = t2._as(t7)[$.$get$kName()];
-        t7.toString;
-        dartCodes.push(new A.DartCode(A._asString(t7)));
+      t5 = t3.length;
+      t7 = type$.JSArray_DartCode;
+      dartCodes = A._setArrayType([], t7);
+      for (i = 0; i < t5; ++i) {
+        t8 = t3[i];
+        t8.toString;
+        t8 = t2._as(t8)[$.$get$kCode()];
+        t8.toString;
+        t8 = t2._as(t8)[$.$get$kName()];
+        t8.toString;
+        dartCodes.push(new A.DartCode(A._asString(t8)));
       }
       t1 = t1[$.$get$kSamples()];
       t1.toString;
       t4._as(t1);
-      sampleCount = A._asInt(t1[$.$get$_jsLengthString()]);
+      t3 = t1.length;
       dartStacks = A._setArrayType([], type$.JSArray_Stack);
-      for (i = 0; i < sampleCount; ++i) {
-        t3 = t1[i];
-        t3.toString;
-        t2._as(t3);
-        t7 = t3[$.$get$kStack()];
-        t7.toString;
-        t4._as(t7);
-        stackCount = A._asInt(t7[$.$get$_jsLengthString()]);
-        dartFrames = A._setArrayType([], t5);
-        for (j = 0; j < stackCount; ++j) {
-          t8 = t7[j];
-          t8.toString;
-          dartFrames.push(dartFunctions[A._asInt(A._asDouble(t8))]);
+      for (i = 0; i < t3; ++i) {
+        t5 = t1[i];
+        t5.toString;
+        t2._as(t5);
+        t8 = t5[$.$get$kStack()];
+        t8.toString;
+        t4._as(t8);
+        t9 = t8.length;
+        dartFrames = A._setArrayType([], t6);
+        for (j = 0; j < t9; ++j) {
+          t10 = t8[j];
+          t10.toString;
+          dartFrames.push(dartFunctions[A._asInt(A._asDouble(t10))]);
         }
-        t7 = t3[$.$get$kCodeStack()];
-        t7.toString;
-        t4._as(t7);
-        cstackCount = A._asInt(t7[$.$get$_jsLengthString()]);
-        codeFrames = A._setArrayType([], t6);
-        for (j = 0; j < cstackCount; ++j) {
-          t8 = t7[j];
-          t8.toString;
-          codeFrames.push(dartCodes[A._asInt(A._asDouble(t8))]);
+        t8 = t5[$.$get$kCodeStack()];
+        t8.toString;
+        t4._as(t8);
+        t9 = t8.length;
+        codeFrames = A._setArrayType([], t7);
+        for (j = 0; j < t9; ++j) {
+          t10 = t8[j];
+          t10.toString;
+          codeFrames.push(dartCodes[A._asInt(A._asDouble(t10))]);
         }
-        t7 = t3[$.$get$kTid()];
-        t7.toString;
-        t7 = A._asInt(A._asDouble(t7));
-        t3 = t3[$.$get$kTimestamp()];
-        t3.toString;
-        dartStacks.push(new A.Stack(t7, A._asInt(A._asDouble(t3)), dartFrames, codeFrames));
+        t8 = t5[$.$get$kTid()];
+        t8.toString;
+        t8 = A._asInt(A._asDouble(t8));
+        t5 = t5[$.$get$kTimestamp()];
+        t5.toString;
+        dartStacks.push(new A.Stack(t8, A._asInt(A._asDouble(t5)), dartFrames, codeFrames));
       }
       A.useDartStacks(dartStacks);
     }
@@ -5408,7 +5420,6 @@
     _lazyFinal($, "kKind", "$get$kKind", () => "_kind");
     _lazyFinal($, "kTrue", "$get$kTrue", () => A.int_parse("1") === 1);
     _lazyFinal($, "kFalse", "$get$kFalse", () => !$.$get$kTrue());
-    _lazyFinal($, "_jsLengthString", "$get$_jsLengthString", () => "length");
   })();
   (function nativeSupport() {
     !function() {

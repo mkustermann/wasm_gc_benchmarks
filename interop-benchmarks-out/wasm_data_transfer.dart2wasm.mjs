@@ -52,7 +52,7 @@ export const instantiate = async (modulePromise, importObjectPromise) => {
     // Imports
     const dart2wasm = {
 
-_60: () => {
+_84: () => {
           let stackString = new Error().stack.toString();
           let frames = stackString.split('\n');
           let drop = 2;
@@ -61,68 +61,68 @@ _60: () => {
           }
           return frames.slice(drop).join('\n');
         },
-_61: () => typeof dartUseDateNowForTicks !== "undefined",
-_62: () => 1000 * performance.now(),
-_63: () => Date.now(),
-_79: s => JSON.stringify(s),
-_80: s => printToConsole(s),
-_81: a => a.join(''),
-_91: (s, p, i) => s.indexOf(p, i),
-_97: (a, i) => a.push(i),
-_108: a => a.length,
-_110: (a, i) => a[i],
-_111: (a, i, v) => a[i] = v,
-_114: (o, start, length) => new Uint8Array(o.buffer, o.byteOffset + start, length),
-_115: (o, start, length) => new Int8Array(o.buffer, o.byteOffset + start, length),
-_116: (o, start, length) => new Uint8ClampedArray(o.buffer, o.byteOffset + start, length),
-_117: (o, start, length) => new Uint16Array(o.buffer, o.byteOffset + start, length),
-_118: (o, start, length) => new Int16Array(o.buffer, o.byteOffset + start, length),
-_119: (o, start, length) => new Uint32Array(o.buffer, o.byteOffset + start, length),
-_120: (o, start, length) => new Int32Array(o.buffer, o.byteOffset + start, length),
-_123: (o, start, length) => new Float32Array(o.buffer, o.byteOffset + start, length),
-_124: (o, start, length) => new Float64Array(o.buffer, o.byteOffset + start, length),
-_127: (o) => new DataView(o.buffer, o.byteOffset, o.byteLength),
-_129: o => o.buffer,
-_130: o => o.byteOffset,
-_131: Function.prototype.call.bind(Object.getOwnPropertyDescriptor(DataView.prototype, 'byteLength').get),
-_132: (b, o) => new DataView(b, o),
-_134: Function.prototype.call.bind(DataView.prototype.getUint8),
-_136: Function.prototype.call.bind(DataView.prototype.getInt8),
-_138: Function.prototype.call.bind(DataView.prototype.getUint16),
-_140: Function.prototype.call.bind(DataView.prototype.getInt16),
-_142: Function.prototype.call.bind(DataView.prototype.getUint32),
-_144: Function.prototype.call.bind(DataView.prototype.getInt32),
-_150: Function.prototype.call.bind(DataView.prototype.getFloat32),
-_152: Function.prototype.call.bind(DataView.prototype.getFloat64),
-_176: (c) =>
+_85: () => typeof dartUseDateNowForTicks !== "undefined",
+_86: () => 1000 * performance.now(),
+_87: () => Date.now(),
+_103: s => JSON.stringify(s),
+_104: s => printToConsole(s),
+_105: a => a.join(''),
+_115: (s, p, i) => s.indexOf(p, i),
+_121: (a, i) => a.push(i),
+_132: a => a.length,
+_134: (a, i) => a[i],
+_135: (a, i, v) => a[i] = v,
+_138: (o, start, length) => new Uint8Array(o.buffer, o.byteOffset + start, length),
+_139: (o, start, length) => new Int8Array(o.buffer, o.byteOffset + start, length),
+_140: (o, start, length) => new Uint8ClampedArray(o.buffer, o.byteOffset + start, length),
+_141: (o, start, length) => new Uint16Array(o.buffer, o.byteOffset + start, length),
+_142: (o, start, length) => new Int16Array(o.buffer, o.byteOffset + start, length),
+_143: (o, start, length) => new Uint32Array(o.buffer, o.byteOffset + start, length),
+_144: (o, start, length) => new Int32Array(o.buffer, o.byteOffset + start, length),
+_147: (o, start, length) => new Float32Array(o.buffer, o.byteOffset + start, length),
+_148: (o, start, length) => new Float64Array(o.buffer, o.byteOffset + start, length),
+_151: (o) => new DataView(o.buffer, o.byteOffset, o.byteLength),
+_153: o => o.buffer,
+_154: o => o.byteOffset,
+_155: Function.prototype.call.bind(Object.getOwnPropertyDescriptor(DataView.prototype, 'byteLength').get),
+_156: (b, o) => new DataView(b, o),
+_158: Function.prototype.call.bind(DataView.prototype.getUint8),
+_160: Function.prototype.call.bind(DataView.prototype.getInt8),
+_162: Function.prototype.call.bind(DataView.prototype.getUint16),
+_164: Function.prototype.call.bind(DataView.prototype.getInt16),
+_166: Function.prototype.call.bind(DataView.prototype.getUint32),
+_168: Function.prototype.call.bind(DataView.prototype.getInt32),
+_174: Function.prototype.call.bind(DataView.prototype.getFloat32),
+_176: Function.prototype.call.bind(DataView.prototype.getFloat64),
+_204: (c) =>
               queueMicrotask(() => dartInstance.exports.$invokeCallback(c)),
-_190: o => o === undefined,
-_191: o => typeof o === 'boolean',
-_192: o => typeof o === 'number',
-_194: o => typeof o === 'string',
-_197: o => o instanceof Int8Array,
-_198: o => o instanceof Uint8Array,
-_199: o => o instanceof Uint8ClampedArray,
-_200: o => o instanceof Int16Array,
-_201: o => o instanceof Uint16Array,
-_202: o => o instanceof Int32Array,
-_203: o => o instanceof Uint32Array,
-_204: o => o instanceof Float32Array,
-_205: o => o instanceof Float64Array,
-_206: o => o instanceof ArrayBuffer,
-_207: o => o instanceof DataView,
-_208: o => o instanceof Array,
-_209: o => typeof o === 'function' && o[jsWrappedDartFunctionSymbol] === true,
-_213: (l, r) => l === r,
-_214: o => o,
-_215: o => o,
-_216: o => o,
-_217: b => !!b,
-_218: o => o.length,
-_221: (o, i) => o[i],
-_222: f => f.dartFunction,
-_223: l => arrayFromDartList(Int8Array, l),
-_224: (data, length) => {
+_213: o => o === undefined,
+_214: o => typeof o === 'boolean',
+_215: o => typeof o === 'number',
+_217: o => typeof o === 'string',
+_220: o => o instanceof Int8Array,
+_221: o => o instanceof Uint8Array,
+_222: o => o instanceof Uint8ClampedArray,
+_223: o => o instanceof Int16Array,
+_224: o => o instanceof Uint16Array,
+_225: o => o instanceof Int32Array,
+_226: o => o instanceof Uint32Array,
+_227: o => o instanceof Float32Array,
+_228: o => o instanceof Float64Array,
+_229: o => o instanceof ArrayBuffer,
+_230: o => o instanceof DataView,
+_231: o => o instanceof Array,
+_232: o => typeof o === 'function' && o[jsWrappedDartFunctionSymbol] === true,
+_236: (l, r) => l === r,
+_237: o => o,
+_238: o => o,
+_239: o => o,
+_240: b => !!b,
+_241: o => o.length,
+_244: (o, i) => o[i],
+_245: f => f.dartFunction,
+_246: l => arrayFromDartList(Int8Array, l),
+_247: (data, length) => {
           const jsBytes = new Uint8Array(length);
           const getByte = dartInstance.exports.$uint8ListGet;
           for (let i = 0; i < length; i++) {
@@ -130,14 +130,14 @@ _224: (data, length) => {
           }
           return jsBytes;
         },
-_225: l => arrayFromDartList(Uint8ClampedArray, l),
-_226: l => arrayFromDartList(Int16Array, l),
-_227: l => arrayFromDartList(Uint16Array, l),
-_228: l => arrayFromDartList(Int32Array, l),
-_229: l => arrayFromDartList(Uint32Array, l),
-_230: l => arrayFromDartList(Float32Array, l),
-_231: l => arrayFromDartList(Float64Array, l),
-_232: (data, length) => {
+_248: l => arrayFromDartList(Uint8ClampedArray, l),
+_249: l => arrayFromDartList(Int16Array, l),
+_250: l => arrayFromDartList(Uint16Array, l),
+_251: l => arrayFromDartList(Int32Array, l),
+_252: l => arrayFromDartList(Uint32Array, l),
+_253: l => arrayFromDartList(Float32Array, l),
+_254: l => arrayFromDartList(Float64Array, l),
+_255: (data, length) => {
           const read = dartInstance.exports.$byteDataGetUint8;
           const view = new DataView(new ArrayBuffer(length));
           for (let i = 0; i < length; i++) {
@@ -145,8 +145,8 @@ _232: (data, length) => {
           }
           return view;
         },
-_233: l => arrayFromDartList(Array, l),
-_234:       (s, length) => {
+_256: l => arrayFromDartList(Array, l),
+_257:       (s, length) => {
         if (length == 0) return '';
 
         const read = dartInstance.exports.$stringRead1;
@@ -167,7 +167,7 @@ _234:       (s, length) => {
         return result;
       }
       ,
-_235:     (s, length) => {
+_258:     (s, length) => {
       if (length == 0) return '';
 
       const read = dartInstance.exports.$stringRead2;
@@ -188,7 +188,7 @@ _235:     (s, length) => {
       return result;
     }
     ,
-_236:     (s) => {
+_259:     (s) => {
       let length = s.length;
       let range = 0;
       for (let i = 0; i < length; i++) {
@@ -244,10 +244,10 @@ _236:     (s) => {
       }
     }
     ,
-_239: l => new Array(l),
-_243: (o, p) => o[p],
-_247: o => String(o),
-_269: v => v.toString()
+_262: l => new Array(l),
+_266: (o, p) => o[p],
+_270: o => String(o),
+_290: v => v.toString()
     };
 
     const baseImports = {

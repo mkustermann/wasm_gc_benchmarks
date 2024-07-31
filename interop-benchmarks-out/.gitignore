@@ -1,4 +1,3 @@
 *.deps
-*.unopt.wasm
 *.map
 wasm_data_transfer.dart2js.js

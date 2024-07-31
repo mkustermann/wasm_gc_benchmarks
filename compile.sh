@@ -11,14 +11,14 @@ function compile {
 }
 
 for dir in $(echo micro-benchmarks interop-benchmarks); do
-cd $dir
-dart pub get
-cd ..
-for file in $dir/*.dart; do
-  if [[ $file != *"_helper.dart" ]]; then
-    DART_FILE="$(basename "$file")"
-    NAME="${DART_FILE%.dart}"
-    compile $dir "$NAME"
-  fi
-done
+  cd $dir
+  dart pub get
+  cd ..
+  for file in $dir/*.dart; do
+    if [[ $file != *"_helper.dart" ]]; then
+      DART_FILE="$(basename "$file")"
+      NAME="${DART_FILE%.dart}"
+      compile $dir "$NAME"
+    fi
+  done
 done

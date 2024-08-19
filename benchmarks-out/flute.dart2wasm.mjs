@@ -52,8 +52,15 @@ export const instantiate = async (modulePromise, importObjectPromise) => {
     // Imports
     const dart2wasm = {
 
-_13: x0 => x0.length,
-_15: (x0,x1) => x0[x1],
+_12: x0 => x0.length,
+_14: (x0,x1) => x0[x1],
+_18: (x0,x1,x2) => new DataView(x0,x1,x2),
+_21: x0 => new Int8Array(x0),
+_22: (x0,x1,x2) => new Uint8Array(x0,x1,x2),
+_23: x0 => new Uint8Array(x0),
+_31: x0 => new Int32Array(x0),
+_35: x0 => new Float32Array(x0),
+_37: x0 => new Float64Array(x0),
 _39: (o, c) => o instanceof c,
 _42: (o,s,v) => o[s] = v,
 _69: () => Symbol("jsBoxedDartObjectProperty"),
@@ -175,21 +182,6 @@ _240: (x0,x1) => x0.exec(x1),
 _241: (x0,x1) => x0.exec(x1),
 _242: x0 => x0.pop(),
 _244: o => o === undefined,
-_245: o => typeof o === 'boolean',
-_246: o => typeof o === 'number',
-_248: o => typeof o === 'string',
-_251: o => o instanceof Int8Array,
-_252: o => o instanceof Uint8Array,
-_253: o => o instanceof Uint8ClampedArray,
-_254: o => o instanceof Int16Array,
-_255: o => o instanceof Uint16Array,
-_256: o => o instanceof Int32Array,
-_257: o => o instanceof Uint32Array,
-_258: o => o instanceof Float32Array,
-_259: o => o instanceof Float64Array,
-_260: o => o instanceof ArrayBuffer,
-_261: o => o instanceof DataView,
-_262: o => o instanceof Array,
 _263: o => typeof o === 'function' && o[jsWrappedDartFunctionSymbol] === true,
 _266: o => o instanceof RegExp,
 _267: (l, r) => l === r,
@@ -201,14 +193,7 @@ _272: o => o.length,
 _275: (o, i) => o[i],
 _276: f => f.dartFunction,
 _277: l => arrayFromDartList(Int8Array, l),
-_278: (data, length) => {
-          const jsBytes = new Uint8Array(length);
-          const getByte = dartInstance.exports.$uint8ListGet;
-          for (let i = 0; i < length; i++) {
-            jsBytes[i] = getByte(data, i);
-          }
-          return jsBytes;
-        },
+_278: l => arrayFromDartList(Uint8Array, l),
 _279: l => arrayFromDartList(Uint8ClampedArray, l),
 _280: l => arrayFromDartList(Int16Array, l),
 _281: l => arrayFromDartList(Uint16Array, l),
@@ -216,16 +201,17 @@ _282: l => arrayFromDartList(Int32Array, l),
 _283: l => arrayFromDartList(Uint32Array, l),
 _284: l => arrayFromDartList(Float32Array, l),
 _285: l => arrayFromDartList(Float64Array, l),
-_286: (data, length) => {
-          const read = dartInstance.exports.$byteDataGetUint8;
+_286: x0 => new ArrayBuffer(x0),
+_287: (data, length) => {
+          const getByte = dartInstance.exports.$byteDataGetUint8;
           const view = new DataView(new ArrayBuffer(length));
           for (let i = 0; i < length; i++) {
-              view.setUint8(i, read(data, i));
+            view.setUint8(i, getByte(data, i));
           }
           return view;
         },
-_287: l => arrayFromDartList(Array, l),
-_288:       (s, length) => {
+_288: l => arrayFromDartList(Array, l),
+_289:       (s, length) => {
         if (length == 0) return '';
 
         const read = dartInstance.exports.$stringRead1;
@@ -246,7 +232,7 @@ _288:       (s, length) => {
         return result;
       }
       ,
-_289:     (s, length) => {
+_290:     (s, length) => {
       if (length == 0) return '';
 
       const read = dartInstance.exports.$stringRead2;
@@ -267,7 +253,7 @@ _289:     (s, length) => {
       return result;
     }
     ,
-_290:     (s) => {
+_291:     (s) => {
       let length = s.length;
       let range = 0;
       for (let i = 0; i < length; i++) {
@@ -323,25 +309,72 @@ _290:     (s) => {
       }
     }
     ,
-_291: () => ({}),
-_293: l => new Array(l),
-_294: () => globalThis,
-_297: (o, p) => o[p],
-_301: o => String(o),
-_306: x0 => x0.index,
-_309: (x0,x1) => x0.exec(x1),
-_311: x0 => x0.flags,
-_312: x0 => x0.multiline,
-_313: x0 => x0.ignoreCase,
-_314: x0 => x0.unicode,
-_315: x0 => x0.dotAll,
-_316: (x0,x1) => x0.lastIndex = x1,
-_318: (o, p) => o[p],
-_321: v => v.toString(),
-_322: (d, digits) => d.toFixed(digits),
-_2124: () => globalThis.window,
-_8946: x0 => x0.matches,
-_12966: x0 => globalThis.window.flutterCanvasKit = x0
+_292: () => ({}),
+_294: l => new Array(l),
+_295: () => globalThis,
+_298: (o, p) => o[p],
+_302: o => String(o),
+_304:   o => {
+    if (o === undefined) return 1;
+    var type = typeof o;
+    if (type === 'boolean') return 2;
+    if (type === 'number') return 3;
+    if (type === 'string') return 4;
+    if (o instanceof Array) return 5;
+    if (ArrayBuffer.isView(o)) {
+      if (o instanceof Int8Array) return 6;
+      if (o instanceof Uint8Array) return 7;
+      if (o instanceof Uint8ClampedArray) return 8;
+      if (o instanceof Int16Array) return 9;
+      if (o instanceof Uint16Array) return 10;
+      if (o instanceof Int32Array) return 11;
+      if (o instanceof Uint32Array) return 12;
+      if (o instanceof Float32Array) return 13;
+      if (o instanceof Float64Array) return 14;
+      if (o instanceof DataView) return 15;
+    }
+    if (o instanceof ArrayBuffer) return 16;
+    return 17;
+  }
+  ,
+_305: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
+          const getByte = dartInstance.exports.$wasmI8ArrayGet;
+          for (let i = 0; i < length; i++) {
+            jsArray[jsArrayOffset + i] = getByte(wasmArray, wasmArrayOffset + i);
+          }
+        },
+_307: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
+          const getByte = dartInstance.exports.$wasmI32ArrayGet;
+          for (let i = 0; i < length; i++) {
+            jsArray[jsArrayOffset + i] = getByte(wasmArray, wasmArrayOffset + i);
+          }
+        },
+_308: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
+          const getByte = dartInstance.exports.$wasmF32ArrayGet;
+          for (let i = 0; i < length; i++) {
+            jsArray[jsArrayOffset + i] = getByte(wasmArray, wasmArrayOffset + i);
+          }
+        },
+_309: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
+          const getByte = dartInstance.exports.$wasmF64ArrayGet;
+          for (let i = 0; i < length; i++) {
+            jsArray[jsArrayOffset + i] = getByte(wasmArray, wasmArrayOffset + i);
+          }
+        },
+_313: x0 => x0.index,
+_316: (x0,x1) => x0.exec(x1),
+_318: x0 => x0.flags,
+_319: x0 => x0.multiline,
+_320: x0 => x0.ignoreCase,
+_321: x0 => x0.unicode,
+_322: x0 => x0.dotAll,
+_323: (x0,x1) => x0.lastIndex = x1,
+_325: (o, p) => o[p],
+_328: v => v.toString(),
+_329: (d, digits) => d.toFixed(digits),
+_2131: () => globalThis.window,
+_8953: x0 => x0.matches,
+_12973: x0 => globalThis.window.flutterCanvasKit = x0
     };
 
     const baseImports = {

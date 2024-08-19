@@ -73,7 +73,6 @@ _87: () => Date.now(),
 _103: s => JSON.stringify(s),
 _104: s => printToConsole(s),
 _105: a => a.join(''),
-_111: s => s.trim(),
 _115: (s, p, i) => s.indexOf(p, i),
 _121: (a, i) => a.push(i),
 _132: a => a.length,
@@ -102,21 +101,6 @@ _176: Function.prototype.call.bind(DataView.prototype.getFloat64),
 _204: (c) =>
               queueMicrotask(() => dartInstance.exports.$invokeCallback(c)),
 _213: o => o === undefined,
-_214: o => typeof o === 'boolean',
-_215: o => typeof o === 'number',
-_217: o => typeof o === 'string',
-_220: o => o instanceof Int8Array,
-_221: o => o instanceof Uint8Array,
-_222: o => o instanceof Uint8ClampedArray,
-_223: o => o instanceof Int16Array,
-_224: o => o instanceof Uint16Array,
-_225: o => o instanceof Int32Array,
-_226: o => o instanceof Uint32Array,
-_227: o => o instanceof Float32Array,
-_228: o => o instanceof Float64Array,
-_229: o => o instanceof ArrayBuffer,
-_230: o => o instanceof DataView,
-_231: o => o instanceof Array,
 _232: o => typeof o === 'function' && o[jsWrappedDartFunctionSymbol] === true,
 _236: (l, r) => l === r,
 _237: o => o,
@@ -127,14 +111,7 @@ _241: o => o.length,
 _244: (o, i) => o[i],
 _245: f => f.dartFunction,
 _246: l => arrayFromDartList(Int8Array, l),
-_247: (data, length) => {
-          const jsBytes = new Uint8Array(length);
-          const getByte = dartInstance.exports.$uint8ListGet;
-          for (let i = 0; i < length; i++) {
-            jsBytes[i] = getByte(data, i);
-          }
-          return jsBytes;
-        },
+_247: l => arrayFromDartList(Uint8Array, l),
 _248: l => arrayFromDartList(Uint8ClampedArray, l),
 _249: l => arrayFromDartList(Int16Array, l),
 _250: l => arrayFromDartList(Uint16Array, l),
@@ -142,16 +119,16 @@ _251: l => arrayFromDartList(Int32Array, l),
 _252: l => arrayFromDartList(Uint32Array, l),
 _253: l => arrayFromDartList(Float32Array, l),
 _254: l => arrayFromDartList(Float64Array, l),
-_255: (data, length) => {
-          const read = dartInstance.exports.$byteDataGetUint8;
+_256: (data, length) => {
+          const getByte = dartInstance.exports.$byteDataGetUint8;
           const view = new DataView(new ArrayBuffer(length));
           for (let i = 0; i < length; i++) {
-              view.setUint8(i, read(data, i));
+            view.setUint8(i, getByte(data, i));
           }
           return view;
         },
-_256: l => arrayFromDartList(Array, l),
-_257:       (s, length) => {
+_257: l => arrayFromDartList(Array, l),
+_258:       (s, length) => {
         if (length == 0) return '';
 
         const read = dartInstance.exports.$stringRead1;
@@ -172,7 +149,7 @@ _257:       (s, length) => {
         return result;
       }
       ,
-_258:     (s, length) => {
+_259:     (s, length) => {
       if (length == 0) return '';
 
       const read = dartInstance.exports.$stringRead2;
@@ -193,7 +170,7 @@ _258:     (s, length) => {
       return result;
     }
     ,
-_259:     (s) => {
+_260:     (s) => {
       let length = s.length;
       let range = 0;
       for (let i = 0; i < length; i++) {
@@ -249,10 +226,33 @@ _259:     (s) => {
       }
     }
     ,
-_262: l => new Array(l),
-_266: (o, p) => o[p],
-_270: o => String(o),
-_290: v => v.toString()
+_263: l => new Array(l),
+_267: (o, p) => o[p],
+_271: o => String(o),
+_273:   o => {
+    if (o === undefined) return 1;
+    var type = typeof o;
+    if (type === 'boolean') return 2;
+    if (type === 'number') return 3;
+    if (type === 'string') return 4;
+    if (o instanceof Array) return 5;
+    if (ArrayBuffer.isView(o)) {
+      if (o instanceof Int8Array) return 6;
+      if (o instanceof Uint8Array) return 7;
+      if (o instanceof Uint8ClampedArray) return 8;
+      if (o instanceof Int16Array) return 9;
+      if (o instanceof Uint16Array) return 10;
+      if (o instanceof Int32Array) return 11;
+      if (o instanceof Uint32Array) return 12;
+      if (o instanceof Float32Array) return 13;
+      if (o instanceof Float64Array) return 14;
+      if (o instanceof DataView) return 15;
+    }
+    if (o instanceof ArrayBuffer) return 16;
+    return 17;
+  }
+  ,
+_297: v => v.toString()
     };
 
     const baseImports = {

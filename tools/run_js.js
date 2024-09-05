@@ -42,7 +42,13 @@ function readFileContentsAsBytes(filename) {
   return new Uint8Array(buffer, 0, buffer.byteLength);
 }
 
-var dartArgs =  (isD8 || isJSC) ? arguments : scriptArgs;
+var args =  (isD8 || isJSC) ? arguments : scriptArgs;
+var dartArgs = [];
+const argsSplit = args.indexOf("--");
+if (argsSplit != -1) {
+  dartArgs = args.slice(argsSplit + 1);
+  args = args.slice(0, argsSplit);
+}
 
 (function(self, scriptArguments) {
   // Using strict mode to avoid accidentally defining global variables.

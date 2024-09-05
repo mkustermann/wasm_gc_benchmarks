@@ -30,25 +30,26 @@ JSC_BIN="$SDK_DIR/third_party/jsc/jsc"
 
 SHELL_BIN="$D8_BIN"
 SHELL_OPTIONS=()
-ARG_SEPERATOR="--"
+SHELL_ARG_SEPERATOR="--"
 JS_FILE=""
 ARGS=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --d8)
       SHELL_BIN="$D8_BIN"
-      ARG_SEPERATOR="--"
+      SHELL_ARG_SEPERATOR="--"
       shift
       ;;
 
     --jsshell)
       SHELL_BIN="$JSSHELL_BIN"
-      ARG_SEPERATOR=""
+      SHELL_ARG_SEPERATOR=""
       shift
       ;;
 
     --jsc)
       SHELL_BIN="$JSC_BIN"
+      SHELL_ARG_SEPERATOR="--"
       shift
       ;;
 
@@ -77,4 +78,4 @@ done
 TEMP_CONCAT_JS="/tmp/wasm_gc_bench_concat_preamble_and_dart2js_code.js"
 cat "$RUN_JS" "$JS_FILE" > "$TEMP_CONCAT_JS"
 
-exec "$SHELL_BIN" "${SHELL_OPTIONS[@]}" "$TEMP_CONCAT_JS" $ARG_SEPERATOR "$@"
+exec "$SHELL_BIN" "${SHELL_OPTIONS[@]}" "$TEMP_CONCAT_JS" $SHELL_ARG_SEPERATOR -- "$@"

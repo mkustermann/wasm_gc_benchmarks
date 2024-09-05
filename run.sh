@@ -2,18 +2,62 @@
 
 set -e
 
+RUN_WASM=1
+RUN_JS=0
+SHELL_ARG=--d8
+while [ $# -gt 0 ]; do
+  case "$1" in
+    # Whether to run JS or Wasm benchmarks
+    --js)
+      RUN_WASM=0
+      RUN_JS=1
+      shift
+      ;;
+    --wasm)
+      RUN_WASM=1
+      RUN_JS=0
+      shift
+      ;;
+
+    # Which shell to use
+    --d8)
+      SHELL_ARG=--d8
+      shift
+      ;;
+
+    --jsc)
+      SHELL_ARG=--jsc
+      shift
+      ;;
+
+    --jsshell)
+      SHELL_ARG=--jsshell
+      shift
+      ;;
+
+    *)
+      echo "Ignoring argument $1"
+      shift
+      ;;
+  esac
+done
+
 function run {
   DIR=$1
   NAME=$2
   shift
   shift
 
-  echo "Running '$DIR/$NAME.dart' benchmark compiled via dart2wasm (args: $@)"
-  tools/run_wasm --d8 "$DIR-out/$NAME.dart2wasm.wasm" "$@"
-  echo ""
-  echo "Running '$DIR/$NAME.dart' benchmark compiled via dart2js (args: $@)"
-  tools/run_js --d8 "$DIR-out/$NAME.dart2js.js" "$@"
-  echo ""
+  if [ $RUN_WASM -eq 1 ]; then
+    echo "Running '$DIR/$NAME.dart' benchmark compiled via dart2wasm (args: $@)"
+    tools/run_wasm $SHELL_ARG "$DIR-out/$NAME.dart2wasm.wasm" "$@"
+    echo ""
+  fi
+  if [ $RUN_JS -eq 1 ]; then
+    echo "Running '$DIR/$NAME.dart' benchmark compiled via dart2js (args: $@)"
+    tools/run_js $SHELL_ARG "$DIR-out/$NAME.dart2js.js" "$@"
+    echo ""
+  fi
   echo ""
 }
 

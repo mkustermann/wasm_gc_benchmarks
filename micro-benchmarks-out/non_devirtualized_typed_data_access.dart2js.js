@@ -2688,7 +2688,7 @@
       return hash + ((hash & 16383) << 15) & 536870911;
     },
     print(object) {
-      A.printString(object);
+      A.printString(A.S(object));
     },
     Error: function Error() {
     },
@@ -3046,6 +3046,8 @@
       t5.setFromTranslationRotation$2(t1, t2);
       t5.scale$1(t3);
       A.print("Matrix4TweenBenchmark3(RunTime): " + A.S(new A.Matrix4TweenBenchmark3(t4, t5, "Matrix4TweenBenchmark3", B.C_PrintEmitter).measure$0()) + " us.");
+      if (A.int_parse("1") === 0)
+        A.print($.globalSink);
     },
     MatrixMultiplyBenchmark: function MatrixMultiplyBenchmark(t0, t1, t2, t3, t4) {
       var _ = this;
@@ -4742,6 +4744,7 @@
         t1[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
         t1[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
         t1[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+        $.globalSink = t1;
       }
     }
   };
@@ -4762,6 +4765,7 @@
         t1[1] = t2[1] * x + t2[5] * y + t2[9] * z + t2[13] * w;
         t1[2] = t2[2] * x + t2[6] * y + t2[10] * z + t2[14] * w;
         t1[3] = t2[3] * x + t2[7] * y + t2[11] * z + t2[15] * w;
+        $.globalSink = t1;
       }
     }
   };
@@ -4810,6 +4814,7 @@
         t17[2] = t13;
         t17[1] = t12;
         t17[0] = t10;
+        $.globalSink = t1;
       }
     }
   };
@@ -4849,6 +4854,7 @@
         t2[1] = otherStorage[1];
         t2[0] = otherStorage[0];
         t1.transform$1(t4);
+        $.globalSink = t1;
       }
     }
   };
@@ -4888,6 +4894,7 @@
         t2[1] = otherStorage[1];
         t2[0] = otherStorage[0];
         t1.rotate$1(t4);
+        $.globalSink = t1;
       }
     }
   };
@@ -4911,6 +4918,7 @@
         t3.setFrom$1(t5._min);
         t4.setFrom$1(t5._max);
         t1.transform$1(t2);
+        $.globalSink = t1;
       }
     }
   };
@@ -4934,6 +4942,7 @@
         t3.setFrom$1(t5._min);
         t4.setFrom$1(t5._max);
         t1.rotate$1(t2);
+        $.globalSink = t1;
       }
     }
   };
@@ -4941,15 +4950,15 @@
     run$0() {
       var t1, t2, t3, t4, t5, t6, i, _this = this;
       for (t1 = _this.MX, t2 = _this.V1, t3 = _this.V2, t4 = _this.V3, t5 = _this.MY, t6 = _this.MZ, i = 0; i < 800; ++i) {
-        t1.transform$1(t2);
-        t1.transform$1(t3);
-        t1.transform$1(t4);
-        t5.transform$1(t2);
-        t5.transform$1(t3);
-        t5.transform$1(t4);
-        t6.transform$1(t2);
-        t6.transform$1(t3);
-        t6.transform$1(t4);
+        $.globalSink = t1.transform$1(t2);
+        $.globalSink = t1.transform$1(t3);
+        $.globalSink = t1.transform$1(t4);
+        $.globalSink = t5.transform$1(t2);
+        $.globalSink = t5.transform$1(t3);
+        $.globalSink = t5.transform$1(t4);
+        $.globalSink = t6.transform$1(t2);
+        $.globalSink = t6.transform$1(t3);
+        $.globalSink = t6.transform$1(t4);
       }
     }
   };
@@ -4957,15 +4966,15 @@
     run$0() {
       var t1, t2, t3, t4, t5, t6, i, _this = this;
       for (t1 = _this.MX, t2 = _this.V1, t3 = _this.V2, t4 = _this.V3, t5 = _this.MY, t6 = _this.MZ, i = 0; i < 800; ++i) {
-        t1.transform2$1(t2);
-        t1.transform2$1(t3);
-        t1.transform2$1(t4);
-        t5.transform2$1(t2);
-        t5.transform2$1(t3);
-        t5.transform2$1(t4);
-        t6.transform2$1(t2);
-        t6.transform2$1(t3);
-        t6.transform2$1(t4);
+        $.globalSink = t1.transform2$1(t2);
+        $.globalSink = t1.transform2$1(t3);
+        $.globalSink = t1.transform2$1(t4);
+        $.globalSink = t5.transform2$1(t2);
+        $.globalSink = t5.transform2$1(t3);
+        $.globalSink = t5.transform2$1(t4);
+        $.globalSink = t6.transform2$1(t2);
+        $.globalSink = t6.transform2$1(t3);
+        $.globalSink = t6.transform2$1(t4);
       }
     }
   };
@@ -4976,13 +4985,14 @@
         t1 = new Float32Array(2);
         t1[0] = 100;
         t1[1] = 100;
+        $.globalSink = new A.Vector2(t1);
       }
     }
   };
   A.ConstructorZeroBenchmark.prototype = {
     run$0() {
       for (var i = 0; i < 100000; ++i)
-        $.globalSink[0] = new A.Vector2(new Float32Array(2));
+        $.globalSink = new A.Vector2(new Float32Array(2));
     }
   };
   A.ConstructorArrayBenchmark.prototype = {
@@ -4993,7 +5003,7 @@
         t2 = new Float32Array(2);
         t2[1] = t1[1];
         t2[0] = t1[0];
-        $.globalSink[0] = new A.Vector2(t2);
+        $.globalSink = new A.Vector2(t2);
       }
     }
   };
@@ -5004,7 +5014,7 @@
         t1 = new Float32Array(2);
         t1[0] = i;
         t1[1] = i;
-        $.globalSink[0] = new A.Vector2(t1);
+        $.globalSink = new A.Vector2(t1);
       }
     }
   };
@@ -5017,7 +5027,7 @@
         t2 = new Float32Array(2);
         t2[1] = t1[1];
         t2[0] = t1[0];
-        $.globalSink[0] = new A.Vector2(t2);
+        $.globalSink = new A.Vector2(t2);
       }
     }
   };
@@ -5025,14 +5035,14 @@
     run$0() {
       var t1, i;
       for (t1 = this.list, i = 0; i < 100000; ++i)
-        $.globalSink[0] = new A.Vector2(t1);
+        $.globalSink = new A.Vector2(t1);
     }
   };
   A.ConstructorFromBufferBenchmark.prototype = {
     run$0() {
       var t1, t2, i;
       for (t1 = this.buffer, t2 = J.getInterceptor$x(t1), i = 0; i < 100000; ++i)
-        $.globalSink[0] = new A.Vector2(t2.asFloat32List$2(t1, 0, 2));
+        $.globalSink = new A.Vector2(t2.asFloat32List$2(t1, 0, 2));
     }
   };
   A.ConstructorRandomBenchmark.prototype = {
@@ -5044,25 +5054,27 @@
         t3 = new Float32Array(2);
         t3[0] = t1;
         t3[1] = t2;
-        $.globalSink[0] = new A.Vector2(t3);
+        $.globalSink = new A.Vector2(t3);
       }
     }
   };
   A.SetFromBenchmark.prototype = {
     run$0() {
-      var otherStorage, t1, t2, i, t3;
-      for (otherStorage = this.v1._v2storage, t1 = this.v2._v2storage, t2 = t1.$flags | 0, i = 0; i < 100000; ++i) {
-        t3 = otherStorage[1];
-        t2 & 2 && A.throwUnsupportedOperation(t1);
-        t1[1] = t3;
-        t1[0] = otherStorage[0];
+      var t1, otherStorage, t2, t3, i, t4;
+      for (t1 = this.v2, otherStorage = this.v1._v2storage, t2 = t1._v2storage, t3 = t2.$flags | 0, i = 0; i < 100000; ++i) {
+        t4 = otherStorage[1];
+        t3 & 2 && A.throwUnsupportedOperation(t2);
+        t2[1] = t4;
+        t2[0] = otherStorage[0];
+        $.globalSink = t1;
       }
     }
   };
   A.DotProductBenchmark.prototype = {
     run$0() {
-      for (var i = 0; i < 100000; ++i)
-        ;
+      var otherStorage, t1, i;
+      for (otherStorage = this.v2._v2storage, t1 = this.v1._v2storage, i = 0; i < 100000; ++i)
+        $.globalSink = t1[0] * otherStorage[0] + t1[1] * otherStorage[1];
     }
   };
   A.TweenSetup.prototype = {
@@ -5477,7 +5489,7 @@
     $.Matrix4__decomposeV = null;
     $.Matrix4__decomposeM = null;
     $.Matrix4__decomposeR = null;
-    $.globalSink = [null];
+    $.globalSink = null;
   })();
   (function lazyInitializers() {
     var _lazyFinal = hunkHelpers.lazyFinal;

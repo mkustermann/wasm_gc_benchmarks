@@ -36,6 +36,7 @@ class MatrixMultiplyBenchmark extends BenchmarkBase {
   void run() {
     for (var i = 0; i < 200; i++) {
       Matrix44Operations.multiply(C, 0, A, 0, B, 0);
+      globalSink = C;
     }
   }
 }
@@ -54,6 +55,7 @@ class VectorTransformBenchmark extends BenchmarkBase {
   void run() {
     for (var i = 0; i < 200; i++) {
       Matrix44Operations.transform4(C, 0, A, 0, B, 0);
+      globalSink = C;
     }
   }
 }
@@ -74,6 +76,7 @@ class ViewMatrixBenchmark extends BenchmarkBase {
   void run() {
     for (var i = 0; i < 100; i++) {
       setViewMatrix(M, P, F, U);
+      globalSink = M;
     }
   }
 }
@@ -103,6 +106,7 @@ class Aabb2TransformBenchmark extends BenchmarkBase {
       temp.transform(M);
       temp.copyFrom(B3);
       temp.transform(M);
+      globalSink = temp;
     }
   }
 }
@@ -132,6 +136,7 @@ class Aabb2RotateBenchmark extends BenchmarkBase {
       temp.rotate(M);
       temp.copyFrom(B3);
       temp.rotate(M);
+      globalSink = temp;
     }
   }
 }
@@ -161,6 +166,7 @@ class Aabb3TransformBenchmark extends BenchmarkBase {
       temp.transform(M);
       temp.copyFrom(B3);
       temp.transform(M);
+      globalSink = temp;
     }
   }
 }
@@ -190,6 +196,7 @@ class Aabb3RotateBenchmark extends BenchmarkBase {
       temp.rotate(M);
       temp.copyFrom(B3);
       temp.rotate(M);
+      globalSink = temp;
     }
   }
 }
@@ -211,15 +218,15 @@ class Matrix3TransformVector3Benchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0; i < 800; i++) {
-      MX.transform(V1);
-      MX.transform(V2);
-      MX.transform(V3);
-      MY.transform(V1);
-      MY.transform(V2);
-      MY.transform(V3);
-      MZ.transform(V1);
-      MZ.transform(V2);
-      MZ.transform(V3);
+      globalSink = MX.transform(V1);
+      globalSink = MX.transform(V2);
+      globalSink = MX.transform(V3);
+      globalSink = MY.transform(V1);
+      globalSink = MY.transform(V2);
+      globalSink = MY.transform(V3);
+      globalSink = MZ.transform(V1);
+      globalSink = MZ.transform(V2);
+      globalSink = MZ.transform(V3);
     }
   }
 }
@@ -241,15 +248,15 @@ class Matrix3TransformVector2Benchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0; i < 800; i++) {
-      MX.transform2(V1);
-      MX.transform2(V2);
-      MX.transform2(V3);
-      MY.transform2(V1);
-      MY.transform2(V2);
-      MY.transform2(V3);
-      MZ.transform2(V1);
-      MZ.transform2(V2);
-      MZ.transform2(V3);
+      globalSink = MX.transform2(V1);
+      globalSink = MX.transform2(V2);
+      globalSink = MX.transform2(V3);
+      globalSink = MY.transform2(V1);
+      globalSink = MY.transform2(V2);
+      globalSink = MY.transform2(V3);
+      globalSink = MZ.transform2(V1);
+      globalSink = MZ.transform2(V2);
+      globalSink = MZ.transform2(V3);
     }
   }
 }
@@ -264,7 +271,7 @@ class ConstructorBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0; i < 100000; i++) {
-      Vector2(100, 100);
+      globalSink = Vector2(100, 100);
     }
   }
 }
@@ -279,7 +286,7 @@ class ConstructorZeroBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0; i < 100000; i++) {
-      globalSink[0] = Vector2.zero();
+      globalSink = Vector2.zero();
     }
   }
 }
@@ -294,7 +301,7 @@ class ConstructorArrayBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0.0; i < 100000; i++) {
-      globalSink[0] = Vector2.array([i, i]);
+      globalSink = Vector2.array([i, i]);
     }
   }
 }
@@ -309,7 +316,7 @@ class ConstructorAllBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0.0; i < 100000; i++) {
-      globalSink[0] = Vector2.all(i);
+      globalSink = Vector2.all(i);
     }
   }
 }
@@ -325,7 +332,7 @@ class ConstructorCopyBenchmark extends BenchmarkBase {
   void run() {
     final copyFrom = Vector2(1, 1);
     for (var i = 0.0; i < 100000; i++) {
-      globalSink[0] = Vector2.copy(copyFrom);
+      globalSink = Vector2.copy(copyFrom);
     }
   }
 }
@@ -341,7 +348,7 @@ class ConstructorFromFloat32ListBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0.0; i < 100000; i++) {
-      globalSink[0] = Vector2.fromFloat32List(list);
+      globalSink = Vector2.fromFloat32List(list);
     }
   }
 }
@@ -357,7 +364,7 @@ class ConstructorFromBufferBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0.0; i < 100000; i++) {
-      globalSink[0] = Vector2.fromBuffer(buffer, 0);
+      globalSink = Vector2.fromBuffer(buffer, 0);
     }
   }
 }
@@ -373,7 +380,7 @@ class ConstructorRandomBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0.0; i < 100000; i++) {
-      globalSink[0] = Vector2.random(random);
+      globalSink = Vector2.random(random);
     }
   }
 }
@@ -391,6 +398,7 @@ class SetFromBenchmark extends BenchmarkBase {
   void run() {
     for (var i = 0; i < 100000; i++) {
       v2.setFrom(v1);
+      globalSink = v2;
     }
   }
 }
@@ -407,7 +415,7 @@ class DotProductBenchmark extends BenchmarkBase {
   @override
   void run() {
     for (var i = 0; i < 100000; i++) {
-      v1.dot(v2);
+      globalSink = v1.dot(v2);
     }
   }
 }
@@ -559,6 +567,10 @@ void main() {
   Matrix4TweenBenchmark1().report();
   Matrix4TweenBenchmark2().report();
   Matrix4TweenBenchmark3().report();
+
+  if (int.parse('1') == 0) {
+    print(globalSink);
+  }
 }
 
 // Makes dart2wasm compiler unable to devirtualize typed data accesses in other
@@ -594,7 +606,7 @@ Float32List identityFloat32ConfuseCompiler(Float32List list) =>
 ByteBuffer identityByteBufferConfuseCompiler(ByteBuffer buffer) =>
     kTrue ? buffer : dartViewVector2.buffer;
 
-final globalSink = <Object?>[null];
+Object? globalSink;
 
 final bool kTrue = int.parse('1') == 1;
 final Float32List dartViewMatrix4 =

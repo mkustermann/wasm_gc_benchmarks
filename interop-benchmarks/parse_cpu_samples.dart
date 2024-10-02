@@ -2,12 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ARGS=data/devtools_cpu_samples.json
+// ARGS=data/devtools_cpu_samples.json.gz
 
 import 'dart:js_interop';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:archive/archive_io.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
 
 import 'parse_cpu_samples_helper.dart';
@@ -21,7 +22,9 @@ void main(List<String> args) {
         'got: [${args.join(', ')}])';
   }
   final filename = args.single;
-  final JSUint8Array jsBytes = readFileContentsAsBytes(filename.toJS);
+  final JSUint8Array jsBytes = Uint8List.fromList(GZipDecoder()
+          .decodeBytes(readFileContentsAsBytes(filename.toJS).toDart))
+      .toJS;
   final JSString jsString = (utf8.decode(jsBytes.toDart).toJS);
 
   // Option a) Performance if we keep data in JavaScript and operate on the

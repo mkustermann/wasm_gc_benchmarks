@@ -9,27 +9,24 @@ function detectJsStringBuiltins() {
     new Uint8Array(bytes), {builtins: ['js-string']});
 }
 
-// Compiles a dart2wasm-generated wasm modules from `source` which is then
+// Compiles a dart2wasm-generated main module from `source` which can then
 // instantiatable via the `instantiate` method.
 //
 // `source` needs to be a `Response` object (or promise thereof) e.g. created
 // via the `fetch()` JS API.
 export async function compileStreaming(source) {
-  const module = await WebAssembly.compileStreaming(
-    source,
-    detectJsStringBuiltins() ? {builtins: ['js-string']} : {}
-  );
-  return new CompiledApp(module);
+  const builtins = detectJsStringBuiltins()
+      ? {builtins: ['js-string']} : {};
+  return new CompiledApp(
+      await WebAssembly.compileStreaming(source, builtins), builtins);
 }
 
 // Compiles a dart2wasm-generated wasm modules from `bytes` which is then
 // instantiatable via the `instantiate` method.
 export async function compile(bytes) {
-  const module = await WebAssembly.compile(
-    bytes,
-    detectJsStringBuiltins() ? {builtins: ['js-string']} : {}
-  );
-  return new CompiledApp(module);
+  const builtins = detectJsStringBuiltins()
+      ? {builtins: ['js-string']} : {};
+  return new CompiledApp(await WebAssembly.compile(bytes, builtins), builtins);
 }
 
 // DEPRECATED: Please use `compile` or `compileStreaming` to get a compiled app,
@@ -52,8 +49,9 @@ export const invoke = (moduleInstance, ...args) => {
 }
 
 class CompiledApp {
-  constructor(module) {
+  constructor(module, builtins) {
     this.module = module;
+    this.builtins = builtins;
   }
 
   // The second argument is an options object containing:
@@ -486,8 +484,16 @@ class CompiledApp {
         if (!loadDeferredWasm) {
           throw "No implementation of loadDeferredWasm provided.";
         }
-        const compiledWasm = await loadDeferredWasm(moduleName);
-        return await compiledWasm.instantiate({"module0": dartInstance.exports});
+        const source = await Promise.resolve(loadDeferredWasm(moduleName));
+        const module = await ((source instanceof Response)
+            ? WebAssembly.compileStreaming(source, this.builtins)
+            : WebAssembly.compile(source, this.builtins));
+        return await WebAssembly.instantiate(module, {
+          ...baseImports,
+          ...additionalImports,
+          "wasm:js-string": jsStringPolyfill,
+          "module0": dartInstance.exports,
+        });
       },
     };
 

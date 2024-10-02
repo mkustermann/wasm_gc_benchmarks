@@ -6,4 +6,5 @@ environment:
 
 dependencies:
   benchmark_harness: ^2.2.2
+  archive: any
 

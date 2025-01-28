@@ -10,7 +10,7 @@ final List<double> arrayOfNumbers = [
   for (int i = 0; i < 1000; ++i) i + 0.5,
 ];
 final double arrayOfNumbersSum = arrayOfNumbers.fold(0.0, (a, b) => a + b);
-final String encoded = json.encode(arrayOfNumbers);
+final String encoded = json.encode({'values': arrayOfNumbers});
 
 class NonDevirtualizedListBenchmark<K> extends BenchmarkBase {
   final List<dynamic> array;
@@ -36,7 +36,8 @@ void main() {
   //
   // Though at runtime it happens to be always the same list class, so a JIT
   // compiler should see that and speculatively inline the list accesses.
-  final List<dynamic> jsonDecodedNumbers = json.decode(encoded);
+  final List<dynamic> jsonDecodedNumbers =
+      (json.decode(encoded) as Map)['values'] as List;
 
   // This benchmark is measuring time to access numbers from a json array (e.g.
   // the Dart DevTools app gets JSON data from websocket and looks at them).

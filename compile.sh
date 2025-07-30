@@ -7,8 +7,8 @@ function compile {
   echo "Compiling $DIR/$NAME.dart"
   # NOTE: Once JSC supports `js-string` builtin we want to enable
   # `--extra-compiler-option=--require-js-string-builtin` here.
-  dart compile wasm -O2 --no-strip-wasm -o "$DIR-out/$NAME.dart2wasm.wasm" "$DIR/$NAME.dart"
-  dart compile js -O4 --no-minify -o "$DIR-out/$NAME.dart2js.js" "$DIR/$NAME.dart"
+  dart compile wasm -Ddart.vm.product=true -O2 --no-strip-wasm -o "$DIR-out/$NAME.dart2wasm.wasm" "$DIR/$NAME.dart"
+  dart compile js -Ddart.vm.product=true -O4 --no-minify -o "$DIR-out/$NAME.dart2js.js" "$DIR/$NAME.dart"
   echo ""
 }
 
